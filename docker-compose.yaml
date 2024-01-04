@@ -1,0 +1,58 @@
+version: "3.3"
+
+services:
+  nginx:
+    platform: linux/amd64
+    image: nginx:1.21.3-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+
+    restart: always
+  shell:
+    build:
+      context: ./applications/shell
+    volumes:
+       - ./applications/shell:/app
+    environment:
+      - VITE_BASE=/shell/
+    working_dir: /app
+    command: sh -c  "npm ci --quiet && npm run build -- --base=/shell/ && npm run preview -- --host 0.0.0.0"
+    ports:
+      - "4173:4173"
+    depends_on:
+      - nginx
+    restart: always
+  washingmachine:
+    build:
+      context: ./applications/washingMachine-client
+    volumes:
+       - ./applications/washingMachine-client:/app
+    working_dir: /app
+    command: sh -c  "npm ci --quiet && npm run build -- --base=/washingmachine/ && npm run preview -- --host"
+  shellserver:
+    platform: linux/amd64
+    build:
+      context: ./applications/shell-server
+    volumes:
+       - ./applications/shell-server/src:/app/src
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    depends_on:
+      - nginx
+    command: sh -c  "npm ci --quiet && npm run start:dev"
+  wachingmachineserver:
+    platform: linux/amd64
+    build:
+      context: applications/washingmachine-server
+    volumes:
+      - ./applications/washingmachine-server/src:/app/src
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    depends_on:
+      - nginx
+    command: sh -c  "npm ci --quiet && npm run start:dev"
