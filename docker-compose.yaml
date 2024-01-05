@@ -31,7 +31,9 @@ services:
     volumes:
        - ./applications/washingMachine-client:/app
     working_dir: /app
-    command: sh -c  "npm ci --quiet && npm run build -- --base=/washingmachine/ && npm run preview -- --host"
+    environment:
+      - VITE_BASE=/washingmachine/
+    command: sh -c  "npm ci --quiet && npm run build -- --watch  --base=/washingmachine/ && npm run preview -- --host"
   shellserver:
     platform: linux/amd64
     build:

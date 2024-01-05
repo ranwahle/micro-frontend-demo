@@ -6,19 +6,19 @@ import './App.css'
 import React from "react";
 import {appLoader, MicroApp} from "./MicroApp";
 
-const shellRoute = {
-    path: 'app/:appName',
-    element: <MicroApp/>,
-    loader: appLoader
-}
+
 
 function App() {
 
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <><h1>H1</h1></>,
-        }, shellRoute
+            element: <MicroApp/>,
+        },  {
+            path: 'app/:appName/*',
+            element: <MicroApp/>,
+            loader: appLoader,
+        }
     ], {
         basename: import.meta.env.VITE_BASE
     });
@@ -26,8 +26,14 @@ function App() {
   return (
     <>
         <React.StrictMode>
-            base: {import.meta.env.VITE_BASE}
-            <RouterProvider router={router} />
+
+            <RouterProvider router={router}
+                            future={{ v7_startTransition: true }}
+            />
+
+
+
+
         </React.StrictMode>
     </>
   )

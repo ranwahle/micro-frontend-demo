@@ -5,11 +5,13 @@ export const StyledFrame = styled.iframe`
     width: 100%;
     height: 100%;
     overflow: hidden;
+    flex-grow: 1;
 `;
 
 export const FrameContainer = styled.div`
     width: 100vh;
     height: 100vh;
     overflow: hidden;
-    border: 1px solid;
+    border: none;
+    display: flex;
 `;
