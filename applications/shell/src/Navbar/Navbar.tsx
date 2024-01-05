@@ -14,6 +14,10 @@ const menuItems = [
         label: 'Clothes In Stock',
         path: '/app/washingmachine/clothes-In-Stock',
     },
+    {
+        label: 'Clothes On hanger',
+        path: '/app/hanger',
+    },
 ]
 
 export function Navbar() {
