@@ -5,6 +5,7 @@ import {
 import './App.css'
 import React from "react";
 import {appLoader, MicroApp} from "./MicroApp";
+import { Layout } from "./layout";
 
 
 
@@ -12,11 +13,17 @@ function App() {
 
     const router = createBrowserRouter([
         {
+            path: "*",
+            element: <Layout><></></Layout>,
+          
+        },
+        {
             path: "/",
-            element: <MicroApp/>,
+            element: <Layout><></></Layout>,
+          
         },  {
             path: 'app/:appName/*',
-            element: <MicroApp/>,
+            element: <Layout><MicroApp/></Layout>,
             loader: appLoader,
         }
     ], {
@@ -26,7 +33,6 @@ function App() {
   return (
     <>
         <React.StrictMode>
-
             <RouterProvider router={router}
                             future={{ v7_startTransition: true }}
             />

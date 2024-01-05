@@ -7,7 +7,7 @@ export default defineConfig({
     base: import.meta.env?.VITE_BASE || '/',
     server: {
     proxy: {
-      '/washingmachineserver':
+      '/hangserver':
           {
             target: 'http://localhost/',
             changeOrigin: true,

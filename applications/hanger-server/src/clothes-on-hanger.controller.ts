@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 const ClothsTypes = [
   'Shirt',
   'Pants',
@@ -13,6 +14,7 @@ const ClothsTypes = [
 ] as const;
 
 export interface ClothData {
+  id: string;
   humidity: number;
   timeOnHanger: number;
   type: (typeof ClothsTypes)[number];
@@ -25,8 +27,9 @@ export class ClothesOnHanger {
     const result = [];
     for (let i = 0; i < numberOfCloths; i++) {
       result.push({
+        id: randomUUID(),
         humidity: Math.round(Math.random() * 100),
-        timeOnHanger: Math.round(Math.random() * 60 * 1000),
+        timeOnHanger: Math.round(Math.random() * 60 * 60 * 1000),
         type: ClothsTypes[
           Math.round(Math.random() * ClothsTypes.length) % ClothsTypes.length
         ],

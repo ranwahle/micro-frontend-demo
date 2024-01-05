@@ -1,8 +1,7 @@
 import {Params, useLoaderData} from "react-router-dom";
-import {FrameContainer, StyledFrame} from "./Microapp.styles.tsx";
+import {StyledFrame} from "./Microapp.styles.tsx";
 import {useGetRoutes} from "../hooks/useGetRoutes.tsx";
 import {useEffect, useState} from "react";
-import {Navbar} from "../Navbar/Navbar.tsx";
 
 
 const AppNameToUrl: Record<string, string> = {
@@ -68,8 +67,10 @@ export function MicroApp() {
            
             const { appName } = appData;
             const appIndex = location.pathname.indexOf(appName);
-            const newSource = location.pathname.slice(appIndex);
-            iframe.src = `/${newSource}/`.replace('//', '/');
+            const newSource = `/${location.pathname.slice(appIndex)}/`.replace('//', '/');
+            if (newSource !== iframe.src) {
+                iframe.src = newSource;
+            }
             
         }
         return () => {
@@ -77,11 +78,9 @@ export function MicroApp() {
         }
     })
     return (<>
-        <FrameContainer >
-            <Navbar></Navbar>
+       
            
                 <StyledFrame scrolling="no" src={appUrl} id={appData?.appName}></StyledFrame>
             
-    </FrameContainer>
     </>);
 }

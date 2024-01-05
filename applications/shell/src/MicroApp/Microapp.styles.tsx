@@ -8,10 +8,4 @@ export const StyledFrame = styled.iframe`
     flex-grow: 1;
 `;
 
-export const FrameContainer = styled.div`
-    width: 100vh;
-    height: 100vh;
-    overflow: hidden;
-    border: none;
-    display: flex;
-`;
+
