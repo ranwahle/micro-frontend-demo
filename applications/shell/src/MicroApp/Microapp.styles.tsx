@@ -6,6 +6,7 @@ export const StyledFrame = styled.iframe`
     height: 100%;
     overflow: hidden;
     flex-grow: 1;
+    visibility: hidden;
 `;
 
 

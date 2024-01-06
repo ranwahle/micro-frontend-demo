@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {useGetClothesInStock} from "../hooks/useGetClothesInStock.ts";
 
 export function ClothesInStock() {
@@ -7,6 +8,6 @@ export function ClothesInStock() {
         <progress id="file" max="100" value={numberOfCloths}> {numberOfCloths}</progress>
         There are {numberOfCloths} waiting
         <button onClick={() => setNumberOfCloths(undefined)}>Reload</button>
-
+        <Link to="/">home</Link>
     </>
 }

@@ -1,86 +1,91 @@
-import {Params, useLoaderData} from "react-router-dom";
-import {StyledFrame} from "./Microapp.styles.tsx";
-import {useGetRoutes} from "../hooks/useGetRoutes.tsx";
-import {useEffect, useState} from "react";
-
-
-const AppNameToUrl: Record<string, string> = {
-    washingmachine: '/washingmachine/',
-
-}
-
-interface RouteParams {
-    params: Params<string>;
-}
-
-interface AppData {
-    appName: string;
-    appUrl: string;
-}
-export async function appLoader({ params  }: RouteParams): Promise<AppData> {
-    if (!params.appName) throw new Error('appName is required');
-    return {appName: params.appName, appUrl: AppNameToUrl[params.appName.toLowerCase()] || ''};
-}
+import { useLoaderData } from "react-router-dom";
+import { StyledFrame } from "./Microapp.styles.tsx";
+import { useEffect, useState } from "react";
+import { AppData } from "./RouteLoader.ts";
 
 export function MicroApp() {
-    const microApps = useGetRoutes();
     const appData = useLoaderData() as AppData;
-    const [appUrl, setAppUrl] = useState('')
-    microApps.then((apps) => {
-        if (!appData) {
-            console.error('no app data');
-            return;
-        }
-        const {appName} = appData;
-        const appRoute = apps.find((app) => app.name.toLowerCase() === appName.toLowerCase());
-        if (appRoute) {
-            setAppUrl(appRoute.url);
-        } else {
-            console.error('no route found', {appName, apps});
-        }
-    } );
-
-    function getRoute() {
-        const {appName} = appData;
-       const appIndex = location.pathname.indexOf(appName);
-       if (appIndex === -1) {
-           return '/';
-       }
-         return location.pathname.slice(appIndex + appName.length);
+    const [appHTML, setAppHTML] = useState('');
+    const [frameSource, setFrameSource] = useState('');
+    function getHref(): string {
+        const { appName } = appData;
+        const appIndex = location.pathname.indexOf(appName);
+        return location.pathname.slice(0, appIndex + appName.length) + '/';
     }
+    
+    useEffect(() => { 
 
-    useEffect(() => {
-        const handleMessage = (message: unknown) => {
-            const messageEvent = message as {
-                data: { topic: string, app: string }
-                , source: Window
-            };
-            if (messageEvent.data.topic === 'loaded') {
-                messageEvent.source.postMessage({ topic: 'set-inner-route', route: getRoute() }, '*')
+        const handleMessage = (message: MessageEvent) => { 
+            if (message.data.topic === 'loaded') {
+                const source = message.source as Window;
+                source.addEventListener('popstate', (state) => {
+                    console.log({ state });
+                 });
+                console.log('loaded', message.data.app);
+            } if (message.data.topic === 'location-changed') {
+                console.log('location-changed', message.data.route);
             }
         }
 
         window.addEventListener('message', handleMessage);
-        const iframe = document.querySelector('iframe');
-       
-        if (iframe && appData) {
-           
-            const { appName } = appData;
-            const appIndex = location.pathname.indexOf(appName);
-            const newSource = `/${location.pathname.slice(appIndex)}/`.replace('//', '/');
-            if (newSource !== iframe.src) {
-                iframe.src = newSource;
-            }
-            
-        }
+
         return () => {
             window.removeEventListener('message', handleMessage);
         }
-    })
+    });
+
+    useEffect(() => {
+        if (appHTML) {
+            const iframe = document.querySelector<HTMLIFrameElement>('iframe');
+            if (iframe) {
+                iframe.style.visibility = 'hidden';
+                iframe.src = frameSource;
+                requestAnimationFrame(() => {
+                    const doc = document.implementation.createHTMLDocument();
+                    doc.documentElement.innerHTML = appHTML;
+                    const base = doc.createElement('base');
+                    base.href = getHref();
+                    doc.head.insertBefore(base, doc.head.firstElementChild);
+                    if (iframe.contentDocument && iframe.contentWindow) {
+                        iframe.contentDocument.open();
+                        iframe.contentDocument.write(doc.documentElement.innerHTML);
+                        iframe.contentDocument.close();
+                        iframe.contentWindow.requestAnimationFrame(() => {
+                            iframe.style.visibility = 'visible';
+                        });
+                        
+                    }
+                });
+
+            }
+        }
+    }, [appHTML, frameSource]);
+
+    useEffect(() => {
+
+        if (appData) {
+
+            const { appName } = appData;
+            const appIndex = location.pathname.indexOf(appName);
+            const newSource = `${location.pathname.slice(appIndex)}/`.replace('//', '/');
+            fetch(`http://localhost/${newSource}`).then((response) => response.text()).then((html: string) => {
+                console.log({ html }, { newSource })
+                setFrameSource(`http://localhost/${newSource}`);
+                setAppHTML('');
+                setTimeout(() => setAppHTML(html));
+            });
+
+
+        }
+
+    }, [appData])
     return (<>
-       
-           
-                <StyledFrame scrolling="no" src={appUrl} id={appData?.appName}></StyledFrame>
-            
+
+
+        {appHTML && <StyledFrame scrolling="no" id={appData?.appName}></StyledFrame>}
+
     </>);
 }
+
+
+

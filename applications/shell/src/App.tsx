@@ -4,8 +4,9 @@ import {
 } from "react-router-dom";
 import './App.css'
 import React from "react";
-import {appLoader, MicroApp} from "./MicroApp";
+import { MicroApp} from "./MicroApp";
 import { Layout } from "./layout";
+import { appLoader } from "./MicroApp/RouteLoader";
 
 
 

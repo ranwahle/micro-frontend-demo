@@ -3,6 +3,7 @@ import {useGetStatus} from "./hooks/useGetStatus.tsx";
 import {createBrowserRouter, RouterProvider, useRouteError} from "react-router-dom";
 import {ClothesInStock} from "./ClothesInStock";
 import {useEffect} from "react";
+import { Root } from './Root.tsx';
 
 function ErrorBoundary() {
     const error = useRouteError() as {message: string};
@@ -10,7 +11,7 @@ function ErrorBoundary() {
     return <div>{error.message}</div>;
 }
 function App() {
-
+    
     useEffect(() => {
         if (window.parent && window.parent !== window) {
             window.parent.postMessage({topic: 'loaded', app: import.meta.env.base}, '*');
@@ -28,17 +29,21 @@ function App() {
             window.removeEventListener('message', handleMessage);
         }
     })
+    const baseName = document.head.querySelector('base')?.getAttribute('href') || import.meta.env.VITE_BASE;
+    console.log({ baseName });
     const router = createBrowserRouter([
+       
         {
-            path: "",
-            element: <h1 key="default">Welcome to your washing machine</h1>,
+            path: "/",
+            element: <Root><h1 key="default">Welcome to your washing machine</h1>
+                </Root>,
         },{
-        path: 'clothes-in-stock',
-            element: <ClothesInStock/>
+        path: '/clothes-in-stock',
+            element: <Root><ClothesInStock/></Root>,
         }
 
     ], {
-            basename: import.meta.env.VITE_BASE
+            basename: baseName
     });
     const status = useGetStatus();
   return (
@@ -47,9 +52,11 @@ function App() {
 
         {status === 'loading' && <div>Loading...</div>}
         {status}
-
+       
         {router.state.matches[0].route.path &&
-        <RouterProvider router={router}  fallbackElement={<ErrorBoundary />} />
+              <RouterProvider router={router} fallbackElement={<ErrorBoundary />}
+                  future={{ v7_startTransition: true }}
+         />
         }
     </>
 
