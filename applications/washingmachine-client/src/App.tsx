@@ -1,9 +1,9 @@
 import './App.css'
-import {useGetStatus} from "./hooks/useGetStatus.tsx";
 import {createBrowserRouter, RouterProvider, useRouteError} from "react-router-dom";
-import {ClothesInStock} from "./ClothesInStock";
+import {ClothsInStock} from "./ClothesInStock";
 import {useEffect} from "react";
 import { Root } from './Root.tsx';
+import { MachineStatus } from './MachineStatus/MachineStatus.tsx';
 
 function ErrorBoundary() {
     const error = useRouteError() as {message: string};
@@ -35,23 +35,22 @@ function App() {
        
         {
             path: "/",
-            element: <Root><h1 key="default">Welcome to your washing machine</h1>
+            element: <Root>
+                 <MachineStatus/>
                 </Root>,
         },{
-        path: '/clothes-in-stock',
-            element: <Root><ClothesInStock/></Root>,
+        path: '/cloths-in-stock',
+            element: <Root><ClothsInStock/></Root>,
         }
 
     ], {
             basename: baseName
     });
-    const status = useGetStatus();
   return (
     <>
 <h1>Washing machine</h1>
 
-        {status === 'loading' && <div>Loading...</div>}
-        {status}
+        
        
         {router.state.matches[0].route.path &&
               <RouterProvider router={router} fallbackElement={<ErrorBoundary />}

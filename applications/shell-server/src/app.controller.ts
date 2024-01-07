@@ -4,14 +4,18 @@ import { MicroApplication } from './micro-application.model';
 @Controller()
 export class AppController {
   @Get('/applications-list')
-  getHello(): MicroApplication[] {
+  applicationsList(): MicroApplication[] {
     return [
       {
-        name: 'washingmachine',
+        label: 'Washing Machine Status',
         url: '/washingmachine',
       },
       {
-        name: 'hanger',
+        label: 'Cloths in stock',
+        url: '/washingmachine/cloths-in-stock',
+      },
+      {
+        label: 'hanger',
         url: '/hanger',
       },
     ];

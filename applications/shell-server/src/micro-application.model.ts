@@ -1,4 +1,4 @@
 export interface MicroApplication {
-    name: string;
-    url: string;
+  label: string;
+  url: string;
 }

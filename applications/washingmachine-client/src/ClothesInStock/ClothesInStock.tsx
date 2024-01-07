@@ -1,13 +1,24 @@
 import { Link } from "react-router-dom";
 import {useGetClothesInStock} from "../hooks/useGetClothesInStock.ts";
 
-export function ClothesInStock() {
+import StockImage from '../assets/Stock.png';
+
+export function ClothsInStock() {
     const { numberOfCloths, setNumberOfCloths } = useGetClothesInStock()
 
-    return <><h2>Clothes in stock</h2>
+    return <>
+        <Link to="/">home</Link>
+        <div>
+        <h2>Clothes in stock</h2>
+                
+
         <progress id="file" max="100" value={numberOfCloths}> {numberOfCloths}</progress>
         There are {numberOfCloths} waiting
         <button onClick={() => setNumberOfCloths(undefined)}>Reload</button>
-        <Link to="/">home</Link>
+        </div>
+            <div>
+        <img src={StockImage} alt="Stock" />  
+
+        </div>
     </>
 }

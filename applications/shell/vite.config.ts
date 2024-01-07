@@ -11,7 +11,16 @@ export default defineConfig({
         {
             target: 'http://localhost/',
             changeOrigin: true,
-        }
+      },
+      '/hanger': {
+        target: 'http://localhost/',
+            changeOrigin: true,
+      },
+      '/washingmachine': {
+        target: 'http://localhost/',
+            changeOrigin: true,
+      
+      }
     }
   }
 })

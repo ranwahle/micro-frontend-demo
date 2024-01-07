@@ -18,12 +18,22 @@ export function MicroApp() {
         const handleMessage = (message: MessageEvent) => { 
             if (message.data.topic === 'loaded') {
                 const source = message.source as Window;
-                source.addEventListener('popstate', (state) => {
+                const iframe = document.querySelector<HTMLIFrameElement>('iframe');
+                if (iframe) {
+                    iframe.style.visibility = 'visible';
+                }
+                    source.addEventListener('popstate', (state) => {
                     console.log({ state });
                  });
                 console.log('loaded', message.data.app);
             } if (message.data.topic === 'location-changed') {
                 console.log('location-changed', message.data.route);
+                const newUrl = (getHref() + message.data.route).replace('//', '/');
+                console.log({ newUrl });
+                setTimeout(() => {
+                    window.history.replaceState(null, '', newUrl);
+                });
+
             }
         }
 
@@ -37,27 +47,7 @@ export function MicroApp() {
     useEffect(() => {
         if (appHTML) {
             const iframe = document.querySelector<HTMLIFrameElement>('iframe');
-            if (iframe) {
-                iframe.style.visibility = 'hidden';
-                iframe.src = frameSource;
-                requestAnimationFrame(() => {
-                    const doc = document.implementation.createHTMLDocument();
-                    doc.documentElement.innerHTML = appHTML;
-                    const base = doc.createElement('base');
-                    base.href = getHref();
-                    doc.head.insertBefore(base, doc.head.firstElementChild);
-                    if (iframe.contentDocument && iframe.contentWindow) {
-                        iframe.contentDocument.open();
-                        iframe.contentDocument.write(doc.documentElement.innerHTML);
-                        iframe.contentDocument.close();
-                        iframe.contentWindow.requestAnimationFrame(() => {
-                            iframe.style.visibility = 'visible';
-                        });
-                        
-                    }
-                });
-
-            }
+            loadFrameContent(iframe);
         }
     }, [appHTML, frameSource]);
 
@@ -85,6 +75,25 @@ export function MicroApp() {
         {appHTML && <StyledFrame scrolling="no" id={appData?.appName}></StyledFrame>}
 
     </>);
+
+    function loadFrameContent(iframe: HTMLIFrameElement | null) {
+        if (iframe) {
+            iframe.style.visibility = 'hidden';
+            requestAnimationFrame(() => {
+                const doc = document.implementation.createHTMLDocument();
+                doc.documentElement.innerHTML = appHTML;
+                const base = doc.createElement('base');
+                base.href = getHref();
+                doc.head.insertBefore(base, doc.head.firstElementChild);
+                if (iframe.contentDocument && iframe.contentWindow) {
+                    iframe.contentDocument.open();
+                    iframe.contentDocument.write(doc.documentElement.innerHTML);
+                    iframe.contentDocument.close();
+                }
+            });
+
+        }
+    }
 }
 
 

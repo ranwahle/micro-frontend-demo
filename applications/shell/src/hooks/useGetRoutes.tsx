@@ -1,15 +1,27 @@
+import { useState } from "react";
+
 export interface ApplicationData {
-    name: string;
+    label: string;
     url: string;
 }
 
-export async function useGetRoutes() {
-    const response = await fetch('/shellserver/applications-list')
-    const result =  await response.json() as ApplicationData[];
-    result.forEach((app) => {
-        if (!app.url.endsWith('/')) {
-            app.url = `${app.url}/`;
-        }
-    });
-    return result;
+export function useGetRoutes() {
+    const [routes, setRoutes] = useState<ApplicationData[]>([]);
+    fetch('/shellserver/applications-list')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        }).then((result) => { 
+            result.forEach((app: ApplicationData) => {
+                if (!app.url.endsWith('/')) {
+                    app.url = `${app.url}/`;
+                }
+            });
+            if (routes.length === 0) {
+                setRoutes(result);
+            }
+        });
+    return routes;
 }
