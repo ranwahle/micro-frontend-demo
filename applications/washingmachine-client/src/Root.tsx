@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router";
+import { StyledLink } from "./Root.styles";
 
 interface propsWithChildren { 
     children: React.ReactNode;
@@ -26,6 +27,8 @@ export function Root({children}: propsWithChildren) {
     }
     , [location]);
     return <>
+        <StyledLink to="/">Home</StyledLink>
+        <StyledLink to="/cloths-in-stock">Cloths in stock</StyledLink>
         {children}
     </>
 }
