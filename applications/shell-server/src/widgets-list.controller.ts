@@ -1,14 +1,22 @@
 import { Controller, Get } from '@nestjs/common';
-import { MicroApplication } from './micro-application.model';
+
+interface Widget {
+  url: string;
+  label: string;
+}
 
 @Controller()
-export class AppController {
-  @Get('/applications-list')
-  applicationsList(): MicroApplication[] {
+export class WidgetsListController {
+  @Get('widgets-list')
+  /**
+   * Retrieves the list of widgets.
+   * @returns An array of Widget objects.
+   */
+  widgetsList(): Widget[] {
     return [
       {
         label: 'Washing Machine Status',
-        url: '/washingmachine',
+        url: '/washingmachine/widgets/status',
       },
       {
         label: 'Cloths in stock',

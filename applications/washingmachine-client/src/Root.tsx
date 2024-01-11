@@ -27,6 +27,7 @@ export function Root({children}: propsWithChildren) {
     }
     , [location]);
     return <>
+        <h1>Washing machine</h1>
         <StyledLink to="/">Home</StyledLink>
         <StyledLink to="/cloths-in-stock">Cloths in stock</StyledLink>
         {children}

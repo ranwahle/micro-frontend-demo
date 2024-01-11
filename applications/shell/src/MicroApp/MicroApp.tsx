@@ -6,15 +6,14 @@ import { AppData } from "./RouteLoader.ts";
 export function MicroApp() {
     const appData = useLoaderData() as AppData;
     const [appHTML, setAppHTML] = useState('');
-    const [frameSource, setFrameSource] = useState('');
-    function getHref(): string {
-        const { appName } = appData;
+
+    function getHref(appName: string): string {
         const appIndex = location.pathname.indexOf(appName);
         return location.pathname.slice(0, appIndex + appName.length) + '/';
     }
     
     useEffect(() => { 
-
+        const { appName } = appData;
         const handleMessage = (message: MessageEvent) => { 
             if (message.data.topic === 'loaded') {
                 const source = message.source as Window;
@@ -28,7 +27,7 @@ export function MicroApp() {
                 console.log('loaded', message.data.app);
             } if (message.data.topic === 'location-changed') {
                 console.log('location-changed', message.data.route);
-                const newUrl = (getHref() + message.data.route).replace('//', '/');
+                const newUrl = (getHref(appName) + message.data.route).replace('//', '/');
                 console.log({ newUrl });
                 setTimeout(() => {
                     window.history.replaceState(null, '', newUrl);
@@ -45,11 +44,30 @@ export function MicroApp() {
     });
 
     useEffect(() => {
+        const { appName } = appData;
+        function loadFrameContent(iframe: HTMLIFrameElement | null) {
+            if (iframe) {
+                iframe.style.visibility = 'hidden';
+                requestAnimationFrame(() => {
+                    const doc = document.implementation.createHTMLDocument();
+                    doc.documentElement.innerHTML = appHTML;
+                    const base = doc.createElement('base');
+                    base.href = getHref(appName);
+                    doc.head.insertBefore(base, doc.head.firstElementChild);
+                    if (iframe.contentDocument && iframe.contentWindow) {
+                        iframe.contentDocument.open();
+                        iframe.contentDocument.write(doc.documentElement.innerHTML);
+                        iframe.contentDocument.close();
+                    }
+                });
+    
+            }
+        }
         if (appHTML) {
             const iframe = document.querySelector<HTMLIFrameElement>('iframe');
             loadFrameContent(iframe);
         }
-    }, [appHTML, frameSource]);
+    }, [appHTML, appData]);
 
     useEffect(() => {
 
@@ -59,8 +77,7 @@ export function MicroApp() {
             const appIndex = location.pathname.indexOf(appName);
             const newSource = `${location.pathname.slice(appIndex)}/`.replace('//', '/');
             fetch(`http://localhost/${newSource}`).then((response) => response.text()).then((html: string) => {
-                console.log({ html }, { newSource })
-                setFrameSource(`http://localhost/${newSource}`);
+                console.log({ html }, { newSource });
                 setAppHTML('');
                 setTimeout(() => setAppHTML(html));
             });
@@ -76,24 +93,7 @@ export function MicroApp() {
 
     </>);
 
-    function loadFrameContent(iframe: HTMLIFrameElement | null) {
-        if (iframe) {
-            iframe.style.visibility = 'hidden';
-            requestAnimationFrame(() => {
-                const doc = document.implementation.createHTMLDocument();
-                doc.documentElement.innerHTML = appHTML;
-                const base = doc.createElement('base');
-                base.href = getHref();
-                doc.head.insertBefore(base, doc.head.firstElementChild);
-                if (iframe.contentDocument && iframe.contentWindow) {
-                    iframe.contentDocument.open();
-                    iframe.contentDocument.write(doc.documentElement.innerHTML);
-                    iframe.contentDocument.close();
-                }
-            });
-
-        }
-    }
+   
 }
 
 

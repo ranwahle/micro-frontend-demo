@@ -7,6 +7,7 @@ import React from "react";
 import { MicroApp} from "./MicroApp";
 import { Layout } from "./layout";
 import { appLoader } from "./MicroApp/RouteLoader";
+import { Homepage } from "./Homepage";
 
 
 
@@ -20,7 +21,7 @@ function App() {
         },
         {
             path: "/",
-            element: <Layout><></></Layout>,
+            element: <Layout><Homepage/></Layout>,
           
         },  {
             path: 'app/:appName/*',

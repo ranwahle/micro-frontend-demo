@@ -25,6 +25,7 @@ export function Navbar() {
     const routes = useGetRoutes();
     console.log(routes);
     return <StyledNav>
+        <StyledLink to="/">Home</StyledLink>
         {routes.map(item => <div key={item.url}>
             <StyledLink to={'/app' + item.url}>{item.label}</StyledLink>
             </div>)}

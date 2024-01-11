@@ -4,6 +4,7 @@ import {ClothsInStock} from "./ClothesInStock";
 import {useEffect} from "react";
 import { Root } from './Root.tsx';
 import { MachineStatus } from './MachineStatus/MachineStatus.tsx';
+import { Status } from './widgets/Status.tsx';
 
 function ErrorBoundary() {
     const error = useRouteError() as {message: string};
@@ -33,12 +34,14 @@ function App() {
     console.log({ baseName });
     const router = createBrowserRouter([
        
+   
         {
             path: "/",
-            element: <Root>
-                 <MachineStatus/>
-                </Root>,
-        },{
+            element:      <Root>            <MachineStatus/></Root>
+          
+        },
+        {path: '/widgets/status/', element: <Status/>}
+        , {
         path: '/cloths-in-stock',
             element: <Root><ClothsInStock/></Root>,
         }
@@ -48,7 +51,7 @@ function App() {
     });
   return (
     <>
-<h1>Washing machine</h1>
+
 
         
        

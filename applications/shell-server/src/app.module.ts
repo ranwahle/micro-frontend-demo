@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { ApplicationsListController } from './micr-apps-list.controller';
+import { WidgetsListController } from './widgets-list.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController],
+  controllers: [ApplicationsListController, WidgetsListController],
   providers: [],
 })
 export class AppModule {}
