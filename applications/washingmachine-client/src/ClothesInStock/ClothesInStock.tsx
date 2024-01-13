@@ -1,9 +1,9 @@
-import {useGetClothesInStock} from "../hooks/useGetClothesInStock.ts";
+import {useGetClothsInStock} from "../hooks/useGetClothsInStock.ts";
 
 import StockImage from '../assets/Stock.png';
 
 export function ClothsInStock() {
-    const { numberOfCloths, setNumberOfCloths } = useGetClothesInStock()
+    const { numberOfCloths, setNumberOfCloths } = useGetClothsInStock()
 
     return <>
         <div>

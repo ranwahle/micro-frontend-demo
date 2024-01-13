@@ -1,13 +1,11 @@
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './App.css'
-import { ClothContainer, ClothsContainer } from './App.styles.tsx';
-import {useGetClothsStatus} from "./hooks/useGetClothsStatus.tsx";
 import {useEffect} from "react";
+import { Home } from './home/Home.tsx';
+import { ClothsOnHanger } from './widgets/ClothsOnHanger.tsx';
+import { Root } from './Root.tsx';
 
-function timeString(time: number) {
-    const minutes = Math.floor(time / 60000);
-    const seconds = (Math.floor((time / 1000))) % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
+
 
 
 
@@ -32,29 +30,29 @@ function App() {
             window.removeEventListener('message', handleMessage);
         }
     })
+
+    const basename = document.head.querySelector('base')?.getAttribute('href') || import.meta.env.VITE_BASE;
+
+    const router = createBrowserRouter([
+        {
+            path: "/",
+            element: <Root><Home /></Root>
+        },
+        {
+            path: 'widgets/cloths-on-hanger/',
+            element: <ClothsOnHanger/>
+        }
+    ], {basename})
+   ;
   
-    const cloths = useGetClothsStatus();
   return (
-    <>
-<h1>Hanger</h1>
-          <ClothsContainer>
-              <ClothContainer>
-                  <div>Type</div>
-                  <div>Drying time</div>
-                  <div>Drying progress</div>
-          </ClothContainer>
-          </ClothsContainer>
-              <ClothsContainer>
-          {cloths && cloths.map((cloth) => <ClothContainer>
-            <div>{cloth.type}</div>
-              <div>{timeString(cloth.timeOnHanger)}</div>
-              <div><progress max="100" value={100 - cloth.humidity}></progress>
-              </div></ClothContainer>)
-          
-              }
-        </ClothsContainer>
-      
-    </>
+   <>
+    {router.state.matches[0].route.path &&
+        <RouterProvider router={router} 
+            future={{ v7_startTransition: true }}
+   />
+          }
+          </>
 
   )
 }

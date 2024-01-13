@@ -30,7 +30,7 @@ export function MicroApp() {
                 const newUrl = (getHref(appName) + message.data.route).replace('//', '/');
                 console.log({ newUrl });
                 setTimeout(() => {
-                    window.history.replaceState(null, '', newUrl);
+                     window.history.replaceState(null, '', newUrl);
                 });
 
             }

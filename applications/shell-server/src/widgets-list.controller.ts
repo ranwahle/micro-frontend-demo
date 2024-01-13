@@ -20,11 +20,11 @@ export class WidgetsListController {
       },
       {
         label: 'Cloths in stock',
-        url: '/washingmachine/cloths-in-stock',
+        url: '/washingmachine/widgets/cloths-in-stock',
       },
       {
         label: 'hanger',
-        url: '/hanger',
+        url: '/hanger/widgets/cloths-on-hanger',
       },
     ];
   }

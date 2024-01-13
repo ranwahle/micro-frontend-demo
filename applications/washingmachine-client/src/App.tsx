@@ -1,29 +1,30 @@
 import './App.css'
-import {createBrowserRouter, RouterProvider, useRouteError} from "react-router-dom";
-import {ClothsInStock} from "./ClothesInStock";
-import {useEffect} from "react";
+import { createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
+import { ClothsInStock } from "./ClothesInStock";
+import { useEffect } from "react";
 import { Root } from './Root.tsx';
 import { MachineStatus } from './MachineStatus/MachineStatus.tsx';
 import { Status } from './widgets/Status.tsx';
+import { ClothsInStockWidget } from './widgets/ClothsInStockWidget.tsx';
 
 function ErrorBoundary() {
-    const error = useRouteError() as {message: string};
+    const error = useRouteError() as { message: string };
     console.error(error);
     return <div>{error.message}</div>;
 }
 function App() {
-    
+
     useEffect(() => {
         if (window.parent && window.parent !== window) {
-            window.parent.postMessage({topic: 'loaded', app: import.meta.env.base}, '*');
+            window.parent.postMessage({ topic: 'loaded', app: import.meta.env.base }, '*');
         }
         const handleMessage = (message: unknown) => {
-           const {data} = message as {data: {topic: string, route: string}};
-              if (data.topic === 'set-inner-route') {
-                  console.log({data})
+            const { data } = message as { data: { topic: string, route: string } };
+            if (data.topic === 'set-inner-route') {
+                console.log({ data })
                 window.history.replaceState(null, '', `${import.meta.env.VITE_BASE}${data.route}/`
                     .replace('//', '/'))
-              }
+            }
         }
         window.addEventListener('message', handleMessage);
         return () => {
@@ -31,38 +32,41 @@ function App() {
         }
     })
     const baseName = document.head.querySelector('base')?.getAttribute('href') || import.meta.env.VITE_BASE;
-    console.log({ baseName });
     const router = createBrowserRouter([
-       
-   
+
+
         {
             path: "/",
-            element:      <Root>            <MachineStatus/></Root>
-          
+            element: <Root><MachineStatus /></Root>
+
         },
-        {path: '/widgets/status/', element: <Status/>}
+        { path: '/widgets/status/', element: <Status /> }
         , {
-        path: '/cloths-in-stock',
-            element: <Root><ClothsInStock/></Root>,
+            path: '/cloths-in-stock',
+            element: <Root><ClothsInStock /></Root>,
+        }
+        , {
+            path: '/widgets/cloths-in-stock',
+            element: <ClothsInStockWidget />,
         }
 
     ], {
-            basename: baseName
+        basename: baseName
     });
-  return (
-    <>
+    return (
+        <>
 
 
-        
-       
-        {router.state.matches[0].route.path &&
-              <RouterProvider router={router} fallbackElement={<ErrorBoundary />}
-                  future={{ v7_startTransition: true }}
-         />
-        }
-    </>
 
-  )
+
+            {router.state.matches[0].route.path &&
+                <RouterProvider router={router} fallbackElement={<ErrorBoundary />}
+                    future={{ v7_startTransition: true }}
+                />
+            }
+        </>
+
+    )
 }
 
 export default App

@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export function useGetClothesInStock() {
+export function useGetClothsInStock() {
   const [numberOfCloths, setNumberOfCloths] = useState<number | undefined>();
   fetch('/washingmachineserver/clothes-stock')
     .then(response => response.json())

@@ -33,7 +33,7 @@ services:
     working_dir: /app
     environment:
       - VITE_BASE=/hanger/
-    command: sh -c  "npm ci --quiet && npm run build -- --base=/hanger/ && npm run preview -- --host"
+    command: sh -c  "npm i --quiet && npm run build -- --base=/hanger/ && npm run preview -- --host"
   washingmachine:
     build:
       context: ./applications/washingMachine-client
