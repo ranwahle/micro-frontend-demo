@@ -1,6 +1,6 @@
 import './App.css'
 import { createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
-import { ClothsInStock } from "./ClothesInStock";
+import { ClothesInStock } from "./ClothesInStock";
 import { useEffect } from "react";
 import { Root } from './Root.tsx';
 import { MachineStatus } from './MachineStatus/MachineStatus.tsx';
@@ -26,10 +26,23 @@ function App() {
                     .replace('//', '/'))
             }
         }
+
+        const handleOnBeforeUnload = () => {
+            if (window.parent && window.parent !== window) {
+                window.parent.history.back();
+                return undefined;
+            }
+         }
+
         window.addEventListener('message', handleMessage);
+        window.addEventListener('beforeunload', handleOnBeforeUnload);
         return () => {
             window.removeEventListener('message', handleMessage);
+            window.removeEventListener('beforeunload', handleOnBeforeUnload);
+
         }
+
+       
     })
     const baseName = document.head.querySelector('base')?.getAttribute('href') || import.meta.env.VITE_BASE;
     const router = createBrowserRouter([
@@ -43,7 +56,7 @@ function App() {
         { path: '/widgets/status/', element: <Status /> }
         , {
             path: '/cloths-in-stock',
-            element: <Root><ClothsInStock /></Root>,
+            element: <Root><ClothesInStock /></Root>,
         }
         , {
             path: '/widgets/cloths-in-stock',

@@ -11,7 +11,7 @@ export class ApplicationsListController {
         url: '/washingmachine',
       },
       {
-        label: 'Cloths in stock',
+        label: 'Dirty clothes waiting',
         url: '/washingmachine/cloths-in-stock',
       },
       {

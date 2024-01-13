@@ -1,13 +1,13 @@
-import {useGetClothsInStock} from "../hooks/useGetClothsInStock.ts";
+import {useGetClothesInStock} from "../hooks/useGetClothsInStock.ts";
 
 import StockImage from '../assets/Stock.png';
 
-export function ClothsInStock() {
-    const { numberOfCloths, setNumberOfCloths } = useGetClothsInStock()
+export function ClothesInStock() {
+    const { numberOfCloths, setNumberOfCloths } = useGetClothesInStock()
 
     return <>
         <div>
-        <h2>Clothes in stock</h2>
+        <h2>Clothes in bucket</h2>
                 
 
         <progress id="file" max="100" value={numberOfCloths}> {numberOfCloths}</progress>

@@ -2,7 +2,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './App.css'
 import {useEffect} from "react";
 import { Home } from './home/Home.tsx';
-import { ClothsOnHanger } from './widgets/ClothsOnHanger.tsx';
+import { ClothesOnHanger } from './widgets/ClothsOnHanger.tsx';
 import { Root } from './Root.tsx';
 
 
@@ -39,8 +39,8 @@ function App() {
             element: <Root><Home /></Root>
         },
         {
-            path: 'widgets/cloths-on-hanger/',
-            element: <ClothsOnHanger/>
+            path: 'widgets/clothes-on-hanger/',
+            element: <ClothesOnHanger/>
         }
     ], {basename})
    ;

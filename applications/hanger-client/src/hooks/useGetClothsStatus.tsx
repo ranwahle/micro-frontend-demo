@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 
-const ClothsTypes = [
+const ClothesTypes = [
     'Shirt',
     'Pants',
     'Socks',
@@ -16,24 +16,24 @@ const ClothsTypes = [
   export interface ClothData {
     humidity: number;
     timeOnHanger: number;
-    type: (typeof ClothsTypes)[number];
+    type: (typeof ClothesTypes)[number];
   }
 
-export function useGetClothsStatus() {
-const [clothsList, setClothsList] = useState<ClothData[]>([]);
+export function useGetClothesStatus() {
+const [clothesList, setClothesList] = useState<ClothData[]>([]);
     useEffect(() => {
         fetch('/hangerserver/clothes-on-hanger').then((response) => {
             if (response.ok) {
-                response.json().then((data) => setClothsList(data))
+                response.json().then((data) => setClothesList(data))
 
             } else {
-                setClothsList([]);
+                setClothesList([]);
             }
         }).catch((err) => {
             console.error(err);
-            setClothsList([]);
+            setClothesList([]);
         });
     }, []);
-    return clothsList;
+    return clothesList;
 
 }

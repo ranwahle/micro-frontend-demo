@@ -13,5 +13,7 @@ export const StyledLink = styled(Link)`
     text-decoration: none;
     font-size: 1.2rem;
     color: #cccccc;
+    white-space: nowrap;
+    text-align: left;
     
 `

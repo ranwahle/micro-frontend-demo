@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation } from "react-router-dom";
 import { StyledFrame } from "./Microapp.styles.tsx";
 import { useEffect, useState } from "react";
 import { AppData } from "./RouteLoader.ts";
@@ -6,32 +6,29 @@ import { AppData } from "./RouteLoader.ts";
 export function MicroApp() {
     const appData = useLoaderData() as AppData;
     const [appHTML, setAppHTML] = useState('');
-
     function getHref(appName: string): string {
         const appIndex = location.pathname.indexOf(appName);
         return location.pathname.slice(0, appIndex + appName.length) + '/';
     }
-    
-    useEffect(() => { 
+
+    useEffect(() => {
         const { appName } = appData;
-        const handleMessage = (message: MessageEvent) => { 
+        const handleMessage = (message: MessageEvent) => {
             if (message.data.topic === 'loaded') {
                 const source = message.source as Window;
                 const iframe = document.querySelector<HTMLIFrameElement>('iframe');
                 if (iframe) {
                     iframe.style.visibility = 'visible';
                 }
-                    source.addEventListener('popstate', (state) => {
+                source.addEventListener('popstate', (state) => {
                     console.log({ state });
-                 });
-                console.log('loaded', message.data.app);
-            } if (message.data.topic === 'location-changed') {
-                console.log('location-changed', message.data.route);
-                const newUrl = (getHref(appName) + message.data.route).replace('//', '/');
-                console.log({ newUrl });
-                setTimeout(() => {
-                     window.history.replaceState(null, '', newUrl);
                 });
+            } if (message.data.topic === 'location-changed') {
+                const newUrl = (getHref(appName) + message.data.route).replace('//', '/');
+                const currentUrl = window.location.pathname;
+                if (currentUrl !== newUrl) {
+                    window.history.pushState(history.state, '', newUrl);
+                }
 
             }
         }
@@ -60,7 +57,7 @@ export function MicroApp() {
                         iframe.contentDocument.close();
                     }
                 });
-    
+
             }
         }
         if (appHTML) {
@@ -93,7 +90,7 @@ export function MicroApp() {
 
     </>);
 
-   
+
 }
 
 

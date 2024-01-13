@@ -1,5 +1,5 @@
-import { useGetClothsStatus } from "../hooks/useGetClothsStatus";
-import { ClothContainer, ClothsContainer } from "./Home.styles";
+import { useGetClothesStatus } from "../hooks/useGetClothsStatus";
+import { ClothContainer, ClothesContainer } from "./Home.styles";
 
 function timeString(time: number) {
     const minutes = Math.floor(time / 60000);
@@ -9,26 +9,26 @@ function timeString(time: number) {
 
 export function Home() 
 {
-    const cloths = useGetClothsStatus();
+    const clothes = useGetClothesStatus();
     return (
       <>
   <h1>Hanger</h1>
-            <ClothsContainer>
+            <ClothesContainer>
                 <ClothContainer>
                     <div>Type</div>
                     <div>Drying time</div>
                     <div>Drying progress</div>
             </ClothContainer>
-            </ClothsContainer>
-                <ClothsContainer>
-            {cloths && cloths.map((cloth) => <ClothContainer>
+            </ClothesContainer>
+                <ClothesContainer>
+            {clothes && clothes.map((cloth) => <ClothContainer>
               <div>{cloth.type}</div>
                 <div>{timeString(cloth.timeOnHanger)}</div>
                 <div><progress max="100" value={100 - cloth.humidity}></progress>
                 </div></ClothContainer>)
             
                 }
-          </ClothsContainer>
+          </ClothesContainer>
         
       </>
   

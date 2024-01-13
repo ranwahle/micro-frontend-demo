@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-export const ClothsContainer = styled.div`
+export const ClothesContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { useGetClothsStatus } from "../hooks/useGetClothsStatus";
+import { useGetClothesStatus } from "../hooks/useGetClothsStatus";
 import { StatusContainer } from "./ClothsOnHanger.styles";
 
-export function ClothsOnHanger() {
-    const cloths = useGetClothsStatus();
+export function ClothesOnHanger() {
+    const clothes = useGetClothesStatus();
     useEffect(() => {
-        (window as unknown as {getData: () => number}).getData = () => cloths.length;
-    }, [cloths.length]);
+        (window as unknown as {getData: () => number}).getData = () => clothes.length;
+    }, [clothes.length]);
     return <StatusContainer>
-        <h1>{cloths.length}</h1>
+        <h1>{clothes.length}</h1>
     </StatusContainer>
 }

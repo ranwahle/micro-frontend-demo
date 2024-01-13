@@ -19,11 +19,11 @@ export class WidgetsListController {
         url: '/washingmachine/widgets/status',
       },
       {
-        label: 'Cloths in stock',
+        label: 'Clothes in bucket',
         url: '/washingmachine/widgets/cloths-in-stock',
       },
       {
-        label: 'hanger',
+        label: 'Clothes on hanger',
         url: '/hanger/widgets/cloths-on-hanger',
       },
     ];

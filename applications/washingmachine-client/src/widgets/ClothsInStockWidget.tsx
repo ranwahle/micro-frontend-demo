@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useGetClothsInStock } from "../hooks/useGetClothsInStock";
+import { useGetClothesInStock } from "../hooks/useGetClothsInStock";
 
 export function ClothsInStockWidget() {
-    const { numberOfCloths } = useGetClothsInStock();
+    const { numberOfCloths } = useGetClothesInStock();
     useEffect(() => {
         (window as unknown as {getData: () => number | undefined}).getData = () => numberOfCloths;
     }, [numberOfCloths]);
