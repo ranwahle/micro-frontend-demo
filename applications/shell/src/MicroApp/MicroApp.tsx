@@ -1,4 +1,4 @@
-import { useLoaderData, useLocation } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { StyledFrame } from "./Microapp.styles.tsx";
 import { useEffect, useState } from "react";
 import { AppData } from "./RouteLoader.ts";
@@ -15,28 +15,32 @@ export function MicroApp() {
         const { appName } = appData;
         const handleMessage = (message: MessageEvent) => {
             if (message.data.topic === 'loaded') {
-                const source = message.source as Window;
                 const iframe = document.querySelector<HTMLIFrameElement>('iframe');
                 if (iframe) {
                     iframe.style.visibility = 'visible';
+        
                 }
-                source.addEventListener('popstate', (state) => {
-                    console.log({ state });
-                });
+
             } if (message.data.topic === 'location-changed') {
                 const newUrl = (getHref(appName) + message.data.route).replace('//', '/');
                 const currentUrl = window.location.pathname;
                 if (currentUrl !== newUrl) {
-                    window.history.pushState(history.state, '', newUrl);
+                    history.replaceState(history.state, '', newUrl);
                 }
+               
 
             }
         }
+        const popstateHandler = (state: unknown) => console.log({state})
+            window.addEventListener('popstate', popstateHandler);
+   
 
         window.addEventListener('message', handleMessage);
 
         return () => {
             window.removeEventListener('message', handleMessage);
+            window.removeEventListener('popstate', popstateHandler);
+
         }
     });
 
@@ -55,6 +59,7 @@ export function MicroApp() {
                         iframe.contentDocument.open();
                         iframe.contentDocument.write(doc.documentElement.innerHTML);
                         iframe.contentDocument.close();
+                
                     }
                 });
 
@@ -73,9 +78,8 @@ export function MicroApp() {
             const { appName } = appData;
             const appIndex = location.pathname.indexOf(appName);
             const newSource = `${location.pathname.slice(appIndex)}/`.replace('//', '/');
-            fetch(`http://localhost/${newSource}`).then((response) => response.text()).then((html: string) => {
-                console.log({ html }, { newSource });
-                setAppHTML('');
+            fetch(`/${newSource}`).then((response) => response.text()).then((html: string) => {
+                setAppHTML(''); // Reset the iframe content to show the next load
                 setTimeout(() => setAppHTML(html));
             });
 

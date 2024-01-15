@@ -26,19 +26,19 @@ function App() {
                     .replace('//', '/'))
             }
         }
-
-        const handleOnBeforeUnload = () => {
+        const handlePopState = (state: PopStateEvent) => {
+            console.log({ state }, 'washingmachine');
             if (window.parent && window.parent !== window) {
-                window.parent.history.back();
-                return undefined;
+                window.parent.postMessage({topic: 'location-changed', route: location.pathname}, '*');
             }
-         }
-
+        }
+        window.addEventListener('popstate', handlePopState);
         window.addEventListener('message', handleMessage);
-        window.addEventListener('beforeunload', handleOnBeforeUnload);
+        
         return () => {
             window.removeEventListener('message', handleMessage);
-            window.removeEventListener('beforeunload', handleOnBeforeUnload);
+            window.removeEventListener('popstate', handlePopState);
+            
 
         }
 
