@@ -1,11 +1,11 @@
-import './App.css'
-import { createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
-import { ClothesInStock } from "./ClothesInStock";
 import { useEffect } from "react";
-import { Root } from './Root.tsx';
+import { createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
+import './App.css';
+import { ClothesInStock } from "./ClothesInStock";
 import { MachineStatus } from './MachineStatus/MachineStatus.tsx';
-import { Status } from './widgets/Status.tsx';
+import { Root } from './Root.tsx';
 import { ClothsInStockWidget } from './widgets/ClothsInStockWidget.tsx';
+import { Status } from './widgets/Status.tsx';
 
 function ErrorBoundary() {
     const error = useRouteError() as { message: string };
@@ -32,12 +32,19 @@ function App() {
                 window.parent.postMessage({topic: 'location-changed', route: location.pathname}, '*');
             }
         }
+        const handleUnload = () => {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ topic: 'unloaded', app: import.meta.env.VITE_BASE }, '*');
+            }
+        }
+        window.addEventListener('unload', handleUnload);
         window.addEventListener('popstate', handlePopState);
         window.addEventListener('message', handleMessage);
         
         return () => {
             window.removeEventListener('message', handleMessage);
             window.removeEventListener('popstate', handlePopState);
+            window.removeEventListener('unload', handleUnload);
             
 
         }
