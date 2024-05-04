@@ -24,7 +24,7 @@ export class WidgetsListController {
       },
       {
         label: 'Clothes on hanger',
-        url: '/hanger/widgets/cloths-on-hanger',
+        url: '/hanger/widgets/clothes-on-hanger',
       },
     ];
   }
