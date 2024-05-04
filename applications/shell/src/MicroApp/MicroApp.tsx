@@ -1,26 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLoaderData } from "react-router-dom";
 import { StyledFrame } from "./Microapp.styles.tsx";
 import { AppData } from "./RouteLoader.ts";
-
-function loadFrameContent(iframe: HTMLIFrameElement | null, appName: string, appHTML: string) {
-    if (iframe) {
-        iframe.style.visibility = 'hidden';
-        requestAnimationFrame(() => {
-            const doc = document.implementation.createHTMLDocument();
-            doc.documentElement.innerHTML = appHTML;
-            const base = doc.createElement('base');
-            base.href = getHref(appName);
-            doc.head.insertBefore(base, doc.head.firstElementChild);
-            if (iframe.contentDocument && iframe.contentWindow) {
-                iframe.contentDocument.open();
-                iframe.contentDocument.write(doc.documentElement.innerHTML);
-                iframe.contentDocument.close();
-            }
-        });
-
-    }
-}
 
 function getHref(appName: string): string {
     const appIndex = location.pathname.indexOf(appName);
@@ -29,7 +10,6 @@ function getHref(appName: string): string {
 
 export function MicroApp() {
     const appData = useLoaderData() as AppData;
-    const [appHTML] = useState('');
    
 
     useEffect(() => {
@@ -65,16 +45,6 @@ export function MicroApp() {
     });
 
    
-
-    useEffect(() => {
-        const { appName } = appData;
-        
-        if (appHTML) {
-            const iframe = document.querySelector<HTMLIFrameElement>('iframe');
-            loadFrameContent(iframe, appName, appHTML);
-        }
-    }, [appHTML, appData]);
-
     useEffect(() => {
 
         if (appData) {
