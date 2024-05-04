@@ -1,19 +1,41 @@
+import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { StyledFrame } from "./Microapp.styles.tsx";
-import { useEffect, useState } from "react";
 import { AppData } from "./RouteLoader.ts";
+
+function loadFrameContent(iframe: HTMLIFrameElement | null, appName: string, appHTML: string) {
+    if (iframe) {
+        iframe.style.visibility = 'hidden';
+        requestAnimationFrame(() => {
+            const doc = document.implementation.createHTMLDocument();
+            doc.documentElement.innerHTML = appHTML;
+            const base = doc.createElement('base');
+            base.href = getHref(appName);
+            doc.head.insertBefore(base, doc.head.firstElementChild);
+            if (iframe.contentDocument && iframe.contentWindow) {
+                iframe.contentDocument.open();
+                iframe.contentDocument.write(doc.documentElement.innerHTML);
+                iframe.contentDocument.close();
+            }
+        });
+
+    }
+}
+
+function getHref(appName: string): string {
+    const appIndex = location.pathname.indexOf(appName);
+    return location.pathname.slice(0, appIndex + appName.length) + '/';
+}
 
 export function MicroApp() {
     const appData = useLoaderData() as AppData;
-    const [appHTML, setAppHTML] = useState('');
-    function getHref(appName: string): string {
-        const appIndex = location.pathname.indexOf(appName);
-        return location.pathname.slice(0, appIndex + appName.length) + '/';
-    }
+    const [appHTML] = useState('');
+   
 
     useEffect(() => {
         const { appName } = appData;
         const handleMessage = (message: MessageEvent) => {
+           
             if (message.data.topic === 'loaded') {
                 const iframe = document.querySelector<HTMLIFrameElement>('iframe');
                 if (iframe) {
@@ -27,8 +49,6 @@ export function MicroApp() {
                 if (currentUrl !== newUrl) {
                     history.replaceState(history.state, '', newUrl);
                 }
-               
-
             }
         }
         const popstateHandler = (state: unknown) => console.log({state})
@@ -44,30 +64,14 @@ export function MicroApp() {
         }
     });
 
+   
+
     useEffect(() => {
         const { appName } = appData;
-        function loadFrameContent(iframe: HTMLIFrameElement | null) {
-            if (iframe) {
-                iframe.style.visibility = 'hidden';
-                requestAnimationFrame(() => {
-                    const doc = document.implementation.createHTMLDocument();
-                    doc.documentElement.innerHTML = appHTML;
-                    const base = doc.createElement('base');
-                    base.href = getHref(appName);
-                    doc.head.insertBefore(base, doc.head.firstElementChild);
-                    if (iframe.contentDocument && iframe.contentWindow) {
-                        iframe.contentDocument.open();
-                        iframe.contentDocument.write(doc.documentElement.innerHTML);
-                        iframe.contentDocument.close();
-                
-                    }
-                });
-
-            }
-        }
+        
         if (appHTML) {
             const iframe = document.querySelector<HTMLIFrameElement>('iframe');
-            loadFrameContent(iframe);
+            loadFrameContent(iframe, appName, appHTML);
         }
     }, [appHTML, appData]);
 
@@ -78,10 +82,10 @@ export function MicroApp() {
             const { appName } = appData;
             const appIndex = location.pathname.indexOf(appName);
             const newSource = `${location.pathname.slice(appIndex)}/`.replace('//', '/');
-            fetch(`/${newSource}`).then((response) => response.text()).then((html: string) => {
-                setAppHTML(''); // Reset the iframe content to show the next load
-                setTimeout(() => setAppHTML(html));
-            });
+            const iframe = document.querySelector<HTMLIFrameElement>('iframe');
+            if (iframe) { 
+                iframe.src = `/${newSource}`;
+            }
 
 
         }
@@ -90,7 +94,7 @@ export function MicroApp() {
     return (<>
 
 
-        {appHTML && <StyledFrame scrolling="no" id={appData?.appName}></StyledFrame>}
+        <StyledFrame scrolling="no" id={appData?.appName}></StyledFrame>
 
     </>);
 
