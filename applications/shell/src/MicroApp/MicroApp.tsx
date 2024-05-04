@@ -31,15 +31,11 @@ export function MicroApp() {
                 }
             }
         }
-        const popstateHandler = (state: unknown) => console.log({state})
-            window.addEventListener('popstate', popstateHandler);
-   
 
         window.addEventListener('message', handleMessage);
 
         return () => {
             window.removeEventListener('message', handleMessage);
-            window.removeEventListener('popstate', popstateHandler);
 
         }
     });
