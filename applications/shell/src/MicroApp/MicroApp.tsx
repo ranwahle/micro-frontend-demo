@@ -50,6 +50,7 @@ export function MicroApp() {
             const newSource = `${location.pathname.slice(appIndex)}/`.replace('//', '/');
             const iframe = document.querySelector<HTMLIFrameElement>('iframe');
             if (iframe) { 
+                iframe.style.visibility = 'hidden';
                 iframe.src = `/${newSource}`;
             }
 
